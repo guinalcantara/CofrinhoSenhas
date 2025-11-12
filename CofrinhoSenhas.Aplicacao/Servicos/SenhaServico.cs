@@ -30,7 +30,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// </summary>
         public async Task<IEnumerable<SenhaDTO>> ObterTodosAsync()
         {
-            var senhas = await _senhaRepositorio.ObterSenhasAsync();
+            IEnumerable<Senha> senhas = await _senhaRepositorio.ObterSenhasAsync();
             return _mapeador.Map<IEnumerable<SenhaDTO>>(senhas);
         }
 
@@ -40,7 +40,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="idUsuario">ID do usuário</param>
         public async Task<IEnumerable<SenhaDTO>> ObterSenhasPorUsuarioAsync(int idUsuario)
         {
-            var senhas = await _senhaRepositorio.ObterSenhasPorUsuarioAsync(idUsuario);
+            IEnumerable<Senha> senhas = await _senhaRepositorio.ObterSenhasPorUsuarioAsync(idUsuario);
             return _mapeador.Map<IEnumerable<SenhaDTO>>(senhas);
         }
 
@@ -50,7 +50,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="idCategoria">ID da categoria</param>
         public async Task<IEnumerable<SenhaDTO>> ObterSenhasPorCategoriaAsync(int idCategoria)
         {
-            var senhas = await _senhaRepositorio.ObterSenhasPorCategoriaAsync(idCategoria);
+            IEnumerable<Senha> senhas = await _senhaRepositorio.ObterSenhasPorCategoriaAsync(idCategoria);
             return _mapeador.Map<IEnumerable<SenhaDTO>>(senhas);
         }
 
@@ -60,7 +60,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da senha</param>
         public async Task<SenhaDTO?> ObterPorIdAsync(int id)
         {
-            var senha = await _senhaRepositorio.ObterPorIdAsync(id);
+            Senha? senha = await _senhaRepositorio.ObterPorIdAsync(id);
             return senha != null ? _mapeador.Map<SenhaDTO>(senha) : null;
         }
 
@@ -70,11 +70,11 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da senha</param>
         public async Task<SenhaDescriptografadaDTO?> ObterDescriptografadaPorIdAsync(int id)
         {
-            var senha = await _senhaRepositorio.ObterPorIdAsync(id);
+            Senha? senha = await _senhaRepositorio.ObterPorIdAsync(id);
             if (senha == null)
                 return null;
 
-            var senhaDescriptografada = _mapeador.Map<SenhaDescriptografadaDTO>(senha);
+            SenhaDescriptografadaDTO senhaDescriptografada = _mapeador.Map<SenhaDescriptografadaDTO>(senha);
             senhaDescriptografada.Senha = DescriptografarSenha(senha.SenhaCriptografada);
             
             return senhaDescriptografada;
@@ -86,9 +86,9 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="criarSenhaDto">Dados da nova senha</param>
         public async Task<SenhaDTO> CriarAsync(CriarSenhaDTO criarSenhaDto)
         {
-            var senhaCriptografada = CriptografarSenha(criarSenhaDto.Senha);
+            string senhaCriptografada = CriptografarSenha(criarSenhaDto.Senha);
             
-            var senha = new Senha(
+            Senha senha = new Senha(
                 criarSenhaDto.Titulo,
                 criarSenhaDto.Url,
                 criarSenhaDto.Login,
@@ -101,9 +101,9 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
             // Adicionar etiquetas se fornecidas
             if (criarSenhaDto.IdEtiquetas.Any())
             {
-                foreach (var idEtiqueta in criarSenhaDto.IdEtiquetas)
+                foreach (int idEtiqueta in criarSenhaDto.IdEtiquetas)
                 {
-                    var etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(idEtiqueta);
+                    Etiqueta? etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(idEtiqueta);
                     if (etiqueta != null)
                     {
                         senha.Etiquetas.Add(etiqueta);
@@ -111,7 +111,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
                 }
             }
 
-            var senhaCriada = await _senhaRepositorio.CriarAsync(senha);
+            Senha senhaCriada = await _senhaRepositorio.CriarAsync(senha);
             return _mapeador.Map<SenhaDTO>(senhaCriada);
         }
 
@@ -122,11 +122,11 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="atualizarSenhaDto">Novos dados da senha</param>
         public async Task<SenhaDTO> AtualizarAsync(int id, AtualizarSenhaDTO atualizarSenhaDto)
         {
-            var senha = await _senhaRepositorio.ObterPorIdAsync(id);
+            Senha? senha = await _senhaRepositorio.ObterPorIdAsync(id);
             if (senha == null)
                 throw new ArgumentException("Senha não encontrada");
 
-            var senhaCriptografada = !string.IsNullOrEmpty(atualizarSenhaDto.Senha) 
+            string senhaCriptografada = !string.IsNullOrEmpty(atualizarSenhaDto.Senha) 
                 ? CriptografarSenha(atualizarSenhaDto.Senha) 
                 : senha.SenhaCriptografada;
 
@@ -143,9 +143,9 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
             senha.Etiquetas.Clear();
             if (atualizarSenhaDto.IdEtiquetas.Any())
             {
-                foreach (var idEtiqueta in atualizarSenhaDto.IdEtiquetas)
+                foreach (int idEtiqueta in atualizarSenhaDto.IdEtiquetas)
                 {
-                    var etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(idEtiqueta);
+                    Etiqueta? etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(idEtiqueta);
                     if (etiqueta != null)
                     {
                         senha.Etiquetas.Add(etiqueta);
@@ -153,7 +153,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
                 }
             }
 
-            var senhaAtualizada = await _senhaRepositorio.AtualizarAsync(senha);
+            Senha senhaAtualizada = await _senhaRepositorio.AtualizarAsync(senha);
             return _mapeador.Map<SenhaDTO>(senhaAtualizada);
         }
 
@@ -163,7 +163,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da senha</param>
         public async Task RemoverAsync(int id)
         {
-            var senha = await _senhaRepositorio.ObterPorIdAsync(id);
+            Senha? senha = await _senhaRepositorio.ObterPorIdAsync(id);
             if (senha == null)
                 throw new ArgumentException("Senha não encontrada");
 
@@ -177,18 +177,18 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <returns>Senha criptografada em Base64</returns>
         private static string CriptografarSenha(string senha)
         {
-            using var aes = Aes.Create();
+            using Aes aes = Aes.Create();
 
             // Força chave de 32 bytes
-            var chaveBytes = new byte[32];
+            byte[] chaveBytes = new byte[32];
             Encoding.UTF8.GetBytes(ChaveCriptografia, 0, Math.Min(ChaveCriptografia.Length, 32), chaveBytes, 0);
             aes.Key = chaveBytes;
 
             aes.IV = new byte[16]; // IV zerado
 
-            using var criptografador = aes.CreateEncryptor();
-            var bytesSenha = Encoding.UTF8.GetBytes(senha);
-            var bytesCriptografados = criptografador.TransformFinalBlock(bytesSenha, 0, bytesSenha.Length);
+            using ICryptoTransform criptografador = aes.CreateEncryptor();
+            byte[] bytesSenha = Encoding.UTF8.GetBytes(senha);
+            byte[] bytesCriptografados = criptografador.TransformFinalBlock(bytesSenha, 0, bytesSenha.Length);
 
             return Convert.ToBase64String(bytesCriptografados);
         }
@@ -200,17 +200,17 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <returns>Senha em texto</returns>
         private static string DescriptografarSenha(string senhaCriptografada)
         {
-            using var aes = Aes.Create();
+            using Aes aes = Aes.Create();
 
-            var chaveBytes = new byte[32];
+            byte[] chaveBytes = new byte[32];
             Encoding.UTF8.GetBytes(ChaveCriptografia, 0, Math.Min(ChaveCriptografia.Length, 32), chaveBytes, 0);
             aes.Key = chaveBytes;
 
             aes.IV = new byte[16]; // IV zerado
 
-            using var descriptografador = aes.CreateDecryptor();
-            var bytesCriptografados = Convert.FromBase64String(senhaCriptografada);
-            var bytesDescriptografados = descriptografador.TransformFinalBlock(bytesCriptografados, 0, bytesCriptografados.Length);
+            using ICryptoTransform descriptografador = aes.CreateDecryptor();
+            byte[] bytesCriptografados = Convert.FromBase64String(senhaCriptografada);
+            byte[] bytesDescriptografados = descriptografador.TransformFinalBlock(bytesCriptografados, 0, bytesCriptografados.Length);
 
             return Encoding.UTF8.GetString(bytesDescriptografados);
         }

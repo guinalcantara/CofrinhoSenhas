@@ -27,31 +27,31 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LogEventoDTO>>> ObterLogEventos()
         {
-            var logEventos = await _logEventoServico.ObterTodosAsync();
+            IEnumerable<LogEventoDTO> logEventos = await _logEventoServico.ObterTodosAsync();
             return Ok(logEventos);
         }
 
         /// <summary>
-        /// Busca todos os logs de eventos de um usuário
+        /// Busca todos os logs de eventos de um usu?rio
         /// </summary>
-        /// <param name="idUsuario">ID do usuário</param>
-        /// <returns>Lista de logs do usuário</returns>
+        /// <param name="idUsuario">ID do usu?rio</param>
+        /// <returns>Lista de logs do usu?rio</returns>
         [HttpGet("usuario/{idUsuario}")]
         public async Task<ActionResult<IEnumerable<LogEventoDTO>>> ObterLogEventosPorUsuario(int idUsuario)
         {
-            var logEventos = await _logEventoServico.ObterLogEventosPorUsuarioAsync(idUsuario);
+            IEnumerable<LogEventoDTO> logEventos = await _logEventoServico.ObterLogEventosPorUsuarioAsync(idUsuario);
             return Ok(logEventos);
         }
 
         /// <summary>
-        /// Busca um log de evento específico pelo ID
+        /// Busca um log de evento espec?fico pelo ID
         /// </summary>
         /// <param name="id">ID do log</param>
         /// <returns>Dados do log</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<LogEventoDTO>> ObterLogEvento(int id)
         {
-            var logEvento = await _logEventoServico.ObterPorIdAsync(id);
+            LogEventoDTO? logEvento = await _logEventoServico.ObterPorIdAsync(id);
             if (logEvento == null)
                 return NotFound();
 
@@ -68,7 +68,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var logEvento = await _logEventoServico.CriarAsync(criarLogEventoDto);
+                LogEventoDTO logEvento = await _logEventoServico.CriarAsync(criarLogEventoDto);
                 return CreatedAtAction(nameof(ObterLogEvento), new { id = logEvento.Id }, logEvento);
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         /// Remove um log de evento
         /// </summary>
         /// <param name="id">ID do log</param>
-        /// <returns>Sem conteúdo</returns>
+        /// <returns>Sem conte?do</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> ExcluirLogEvento(int id)
         {

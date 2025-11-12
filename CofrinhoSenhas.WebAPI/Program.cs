@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AdicionarInfraestrutura(builder.Configuration);
 
 // Configurar Autenticação JWT
-var chaveSecreta = builder.Configuration["JwtSettings:ChaveSecreta"] 
+string chaveSecreta = builder.Configuration["JwtSettings:ChaveSecreta"] 
     ?? throw new InvalidOperationException("JWT ChaveSecreta não configurada");
 
 builder.Services.AddAuthentication(opcoes =>
@@ -81,7 +81,7 @@ builder.Services.AddCors(opcoes =>
     });
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

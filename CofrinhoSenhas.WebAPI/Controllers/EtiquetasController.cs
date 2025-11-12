@@ -27,31 +27,31 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EtiquetaDTO>>> ObterEtiquetas()
         {
-            var etiquetas = await _etiquetaServico.ObterTodosAsync();
+            IEnumerable<EtiquetaDTO> etiquetas = await _etiquetaServico.ObterTodosAsync();
             return Ok(etiquetas);
         }
 
         /// <summary>
-        /// Busca todas as etiquetas de um usuário
+        /// Busca todas as etiquetas de um usuáro
         /// </summary>
-        /// <param name="idUsuario">ID do usuário</param>
-        /// <returns>Lista de etiquetas do usuário</returns>
+        /// <param name="idUsuario">ID do usuáro</param>
+        /// <returns>Lista de etiquetas do usuáro</returns>
         [HttpGet("usuario/{idUsuario}")]
         public async Task<ActionResult<IEnumerable<EtiquetaDTO>>> ObterEtiquetasPorUsuario(int idUsuario)
         {
-            var etiquetas = await _etiquetaServico.ObterEtiquetasPorUsuarioAsync(idUsuario);
+            IEnumerable<EtiquetaDTO> etiquetas = await _etiquetaServico.ObterEtiquetasPorUsuarioAsync(idUsuario);
             return Ok(etiquetas);
         }
 
         /// <summary>
-        /// Busca uma etiqueta específica pelo ID
+        /// Busca uma etiqueta espec?fica pelo ID
         /// </summary>
         /// <param name="id">ID da etiqueta</param>
         /// <returns>Dados da etiqueta</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<EtiquetaDTO>> ObterEtiqueta(int id)
         {
-            var etiqueta = await _etiquetaServico.ObterPorIdAsync(id);
+            EtiquetaDTO? etiqueta = await _etiquetaServico.ObterPorIdAsync(id);
             if (etiqueta == null)
                 return NotFound();
 
@@ -68,7 +68,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var etiqueta = await _etiquetaServico.CriarAsync(criarEtiquetaDto);
+                EtiquetaDTO etiqueta = await _etiquetaServico.CriarAsync(criarEtiquetaDto);
                 return CreatedAtAction(nameof(ObterEtiqueta), new { id = etiqueta.Id }, etiqueta);
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var etiqueta = await _etiquetaServico.AtualizarAsync(id, atualizarEtiquetaDto);
+                EtiquetaDTO etiqueta = await _etiquetaServico.AtualizarAsync(id, atualizarEtiquetaDto);
                 return Ok(etiqueta);
             }
             catch (ArgumentException ex)

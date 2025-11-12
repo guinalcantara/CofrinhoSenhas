@@ -31,7 +31,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [Authorize]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> ObterUsuarios()
         {
-            var usuarios = await _usuarioServico.ObterTodosAsync();
+            IEnumerable<UsuarioDTO> usuarios = await _usuarioServico.ObterTodosAsync();
             return Ok(usuarios);
         }
 
@@ -44,7 +44,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [Authorize]
         public async Task<ActionResult<UsuarioDTO>> ObterUsuario(int id)
         {
-            var usuario = await _usuarioServico.ObterPorIdAsync(id);
+            UsuarioDTO? usuario = await _usuarioServico.ObterPorIdAsync(id);
             if (usuario == null)
                 return NotFound();
 
@@ -60,7 +60,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [Authorize]
         public async Task<ActionResult<UsuarioDTO>> ObterUsuarioPorEmail(string email)
         {
-            var usuario = await _usuarioServico.ObterPorEmailAsync(email);
+            UsuarioDTO? usuario = await _usuarioServico.ObterPorEmailAsync(email);
             if (usuario == null)
                 return NotFound();
 
@@ -78,7 +78,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var usuario = await _usuarioServico.CriarAsync(criarUsuarioDto);
+                UsuarioDTO usuario = await _usuarioServico.CriarAsync(criarUsuarioDto);
                 return CreatedAtAction(nameof(ObterUsuario), new { id = usuario.Id }, usuario);
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var usuario = await _usuarioServico.AtualizarAsync(id, atualizarUsuarioDto);
+                UsuarioDTO usuario = await _usuarioServico.AtualizarAsync(id, atualizarUsuarioDto);
                 return Ok(usuario);
             }
             catch (ArgumentException ex)
@@ -141,14 +141,14 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [AllowAnonymous]
         public async Task<ActionResult<LoginRespostaDTO>> FazerLogin(LoginDTO loginDto)
         {
-            var usuario = await _usuarioServico.AutenticarAsync(loginDto);
+            UsuarioDTO? usuario = await _usuarioServico.AutenticarAsync(loginDto);
             if (usuario == null)
                 return Unauthorized("Email ou senha inválidos");
 
-            var token = _tokenServico.GerarToken(usuario);
-            var expiracaoHoras = int.Parse(_configuration["JwtSettings:ExpiracaoHoras"] ?? "8");
+            string token = _tokenServico.GerarToken(usuario);
+            int expiracaoHoras = int.Parse(_configuration["JwtSettings:ExpiracaoHoras"] ?? "8");
 
-            var resposta = new LoginRespostaDTO
+            LoginRespostaDTO resposta = new LoginRespostaDTO
             {
                 Usuario = usuario,
                 Token = token,
@@ -168,7 +168,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [Authorize]
         public async Task<IActionResult> AlterarSenha(int id, [FromBody] AlterarSenhaDTO alterarSenhaDto)
         {
-            var sucesso = await _usuarioServico.AlterarSenhaAsync(id, alterarSenhaDto.SenhaAtual, alterarSenhaDto.NovaSenha);
+            bool sucesso = await _usuarioServico.AlterarSenhaAsync(id, alterarSenhaDto.SenhaAtual, alterarSenhaDto.NovaSenha);
             if (!sucesso)
                 return BadRequest("Senha atual incorreta ou usuário não encontrado");
 

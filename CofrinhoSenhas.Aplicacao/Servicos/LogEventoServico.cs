@@ -25,7 +25,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// </summary>
         public async Task<IEnumerable<LogEventoDTO>> ObterTodosAsync()
         {
-            var logEventos = await _logEventoRepositorio.ObterLogEventosAsync();
+            IEnumerable<LogEvento> logEventos = await _logEventoRepositorio.ObterLogEventosAsync();
             return _mapeador.Map<IEnumerable<LogEventoDTO>>(logEventos);
         }
 
@@ -35,7 +35,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="idUsuario">ID do usuário</param>
         public async Task<IEnumerable<LogEventoDTO>> ObterLogEventosPorUsuarioAsync(int idUsuario)
         {
-            var logEventos = await _logEventoRepositorio.ObterLogEventosPorUsuarioAsync(idUsuario);
+            IEnumerable<LogEvento> logEventos = await _logEventoRepositorio.ObterLogEventosPorUsuarioAsync(idUsuario);
             return _mapeador.Map<IEnumerable<LogEventoDTO>>(logEventos);
         }
 
@@ -45,7 +45,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID do log</param>
         public async Task<LogEventoDTO?> ObterPorIdAsync(int id)
         {
-            var logEvento = await _logEventoRepositorio.ObterPorIdAsync(id);
+            LogEvento? logEvento = await _logEventoRepositorio.ObterPorIdAsync(id);
             return logEvento != null ? _mapeador.Map<LogEventoDTO>(logEvento) : null;
         }
 
@@ -55,14 +55,14 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="criarLogEventoDto">Dados do novo log</param>
         public async Task<LogEventoDTO> CriarAsync(CriarLogEventoDTO criarLogEventoDto)
         {
-            var logEvento = new LogEvento(
+            LogEvento logEvento = new LogEvento(
                 criarLogEventoDto.Evento,
                 criarLogEventoDto.Descricao,
                 criarLogEventoDto.EnderecoIP,
                 criarLogEventoDto.IdUsuario
             );
 
-            var logEventoCriado = await _logEventoRepositorio.CriarAsync(logEvento);
+            LogEvento logEventoCriado = await _logEventoRepositorio.CriarAsync(logEvento);
             return _mapeador.Map<LogEventoDTO>(logEventoCriado);
         }
 
@@ -73,12 +73,12 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="atualizarLogEventoDto">Novos dados do log</param>
         public async Task<LogEventoDTO> AtualizarAsync(int id, LogEventoDTO atualizarLogEventoDto)
         {
-            var logEvento = await _logEventoRepositorio.ObterPorIdAsync(id);
+            LogEvento? logEvento = await _logEventoRepositorio.ObterPorIdAsync(id);
             if (logEvento == null)
                 throw new ArgumentException("Log de evento não encontrado");
 
             // LogEvento é imutável após criação, mas mantemos o método para consistência da interface
-            var logEventoAtualizado = await _logEventoRepositorio.AtualizarAsync(logEvento);
+            LogEvento logEventoAtualizado = await _logEventoRepositorio.AtualizarAsync(logEvento);
             return _mapeador.Map<LogEventoDTO>(logEventoAtualizado);
         }
 
@@ -88,7 +88,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID do log</param>
         public async Task RemoverAsync(int id)
         {
-            var logEvento = await _logEventoRepositorio.ObterPorIdAsync(id);
+            LogEvento? logEvento = await _logEventoRepositorio.ObterPorIdAsync(id);
             if (logEvento == null)
                 throw new ArgumentException("Log de evento não encontrado");
 

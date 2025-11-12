@@ -25,7 +25,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// </summary>
         public async Task<IEnumerable<CategoriaDTO>> ObterTodosAsync()
         {
-            var categorias = await _categoriaRepositorio.ObterCategoriasAsync();
+            IEnumerable<Categoria> categorias = await _categoriaRepositorio.ObterCategoriasAsync();
             return _mapeador.Map<IEnumerable<CategoriaDTO>>(categorias);
         }
 
@@ -35,7 +35,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="idUsuario">ID do usuário</param>
         public async Task<IEnumerable<CategoriaDTO>> ObterCategoriasPorUsuarioAsync(int idUsuario)
         {
-            var categorias = await _categoriaRepositorio.ObterCategoriasPorUsuarioAsync(idUsuario);
+            IEnumerable<Categoria> categorias = await _categoriaRepositorio.ObterCategoriasPorUsuarioAsync(idUsuario);
             return _mapeador.Map<IEnumerable<CategoriaDTO>>(categorias);
         }
 
@@ -45,7 +45,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da categoria</param>
         public async Task<CategoriaDTO?> ObterPorIdAsync(int id)
         {
-            var categoria = await _categoriaRepositorio.ObterPorIdAsync(id);
+            Categoria? categoria = await _categoriaRepositorio.ObterPorIdAsync(id);
             return categoria != null ? _mapeador.Map<CategoriaDTO>(categoria) : null;
         }
 
@@ -55,13 +55,13 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="criarCategoriaDto">Dados da nova categoria</param>
         public async Task<CategoriaDTO> CriarAsync(CriarCategoriaDTO criarCategoriaDto)
         {
-            var categoria = new Categoria(
+            Categoria categoria = new Categoria(
                 criarCategoriaDto.Nome,
                 criarCategoriaDto.Descricao,
                 criarCategoriaDto.IdUsuario
             );
 
-            var categoriaCriada = await _categoriaRepositorio.CriarAsync(categoria);
+            Categoria categoriaCriada = await _categoriaRepositorio.CriarAsync(categoria);
             return _mapeador.Map<CategoriaDTO>(categoriaCriada);
         }
 
@@ -72,13 +72,13 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="atualizarCategoriaDto">Novos dados da categoria</param>
         public async Task<CategoriaDTO> AtualizarAsync(int id, AtualizarCategoriaDTO atualizarCategoriaDto)
         {
-            var categoria = await _categoriaRepositorio.ObterPorIdAsync(id);
+            Categoria? categoria = await _categoriaRepositorio.ObterPorIdAsync(id);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
 
             categoria.Atualizar(atualizarCategoriaDto.Nome, atualizarCategoriaDto.Descricao);
             
-            var categoriaAtualizada = await _categoriaRepositorio.AtualizarAsync(categoria);
+            Categoria categoriaAtualizada = await _categoriaRepositorio.AtualizarAsync(categoria);
             return _mapeador.Map<CategoriaDTO>(categoriaAtualizada);
         }
 
@@ -88,7 +88,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da categoria</param>
         public async Task RemoverAsync(int id)
         {
-            var categoria = await _categoriaRepositorio.ObterPorIdAsync(id);
+            Categoria? categoria = await _categoriaRepositorio.ObterPorIdAsync(id);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
 

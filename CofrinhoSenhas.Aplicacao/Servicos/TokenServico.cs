@@ -27,10 +27,10 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <returns>Token JWT em formato string</returns>
         public string GerarToken(UsuarioDTO usuario)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var chave = Encoding.ASCII.GetBytes(_configuration["JwtSettings:ChaveSecreta"] ?? throw new InvalidOperationException("JWT ChaveSecreta não configurada"));
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            byte[] chave = Encoding.ASCII.GetBytes(_configuration["JwtSettings:ChaveSecreta"] ?? throw new InvalidOperationException("JWT ChaveSecreta não configurada"));
             
-            var tokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
@@ -49,7 +49,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
                 Audience = _configuration["JwtSettings:Audiencia"]
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
     }

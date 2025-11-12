@@ -27,7 +27,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> ObterCategorias()
         {
-            var categorias = await _categoriaServico.ObterTodosAsync();
+            IEnumerable<CategoriaDTO> categorias = await _categoriaServico.ObterTodosAsync();
             return Ok(categorias);
         }
 
@@ -39,7 +39,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet("usuario/{idUsuario}")]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> ObterCategoriasPorUsuario(int idUsuario)
         {
-            var categorias = await _categoriaServico.ObterCategoriasPorUsuarioAsync(idUsuario);
+            IEnumerable<CategoriaDTO> categorias = await _categoriaServico.ObterCategoriasPorUsuarioAsync(idUsuario);
             return Ok(categorias);
         }
 
@@ -51,7 +51,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoriaDTO>> ObterCategoria(int id)
         {
-            var categoria = await _categoriaServico.ObterPorIdAsync(id);
+            CategoriaDTO? categoria = await _categoriaServico.ObterPorIdAsync(id);
             if (categoria == null)
                 return NotFound();
 
@@ -68,7 +68,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var categoria = await _categoriaServico.CriarAsync(criarCategoriaDto);
+                CategoriaDTO categoria = await _categoriaServico.CriarAsync(criarCategoriaDto);
                 return CreatedAtAction(nameof(ObterCategoria), new { id = categoria.Id }, categoria);
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var categoria = await _categoriaServico.AtualizarAsync(id, atualizarCategoriaDto);
+                CategoriaDTO categoria = await _categoriaServico.AtualizarAsync(id, atualizarCategoriaDto);
                 return Ok(categoria);
             }
             catch (ArgumentException ex)

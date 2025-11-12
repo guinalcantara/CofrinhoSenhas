@@ -27,7 +27,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SenhaDTO>>> ObterSenhas()
         {
-            var senhas = await _senhaServico.ObterTodosAsync();
+            IEnumerable<SenhaDTO> senhas = await _senhaServico.ObterTodosAsync();
             return Ok(senhas);
         }
 
@@ -39,7 +39,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet("usuario/{idUsuario}")]
         public async Task<ActionResult<IEnumerable<SenhaDTO>>> ObterSenhasPorUsuario(int idUsuario)
         {
-            var senhas = await _senhaServico.ObterSenhasPorUsuarioAsync(idUsuario);
+            IEnumerable<SenhaDTO> senhas = await _senhaServico.ObterSenhasPorUsuarioAsync(idUsuario);
             return Ok(senhas);
         }
 
@@ -51,7 +51,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet("categoria/{idCategoria}")]
         public async Task<ActionResult<IEnumerable<SenhaDTO>>> ObterSenhasPorCategoria(int idCategoria)
         {
-            var senhas = await _senhaServico.ObterSenhasPorCategoriaAsync(idCategoria);
+            IEnumerable<SenhaDTO> senhas = await _senhaServico.ObterSenhasPorCategoriaAsync(idCategoria);
             return Ok(senhas);
         }
 
@@ -63,7 +63,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet("{id}")]
         public async Task<ActionResult<SenhaDTO>> ObterSenha(int id)
         {
-            var senha = await _senhaServico.ObterPorIdAsync(id);
+            SenhaDTO? senha = await _senhaServico.ObterPorIdAsync(id);
             if (senha == null)
                 return NotFound();
 
@@ -78,7 +78,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         [HttpGet("{id}/descriptografada")]
         public async Task<ActionResult<SenhaDescriptografadaDTO>> ObterSenhaDescriptografada(int id)
         {
-            var senha = await _senhaServico.ObterDescriptografadaPorIdAsync(id);
+            SenhaDescriptografadaDTO? senha = await _senhaServico.ObterDescriptografadaPorIdAsync(id);
             if (senha == null)
                 return NotFound();
 
@@ -95,7 +95,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var senha = await _senhaServico.CriarAsync(criarSenhaDto);
+                SenhaDTO senha = await _senhaServico.CriarAsync(criarSenhaDto);
                 return CreatedAtAction(nameof(ObterSenha), new { id = senha.Id }, senha);
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace CofrinhoSenhas.WebAPI.Controladores
         {
             try
             {
-                var senha = await _senhaServico.AtualizarAsync(id, atualizarSenhaDto);
+                SenhaDTO senha = await _senhaServico.AtualizarAsync(id, atualizarSenhaDto);
                 return Ok(senha);
             }
             catch (ArgumentException ex)

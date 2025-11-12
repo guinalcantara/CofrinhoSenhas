@@ -25,7 +25,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// </summary>
         public async Task<IEnumerable<EtiquetaDTO>> ObterTodosAsync()
         {
-            var etiquetas = await _etiquetaRepositorio.ObterEtiquetasAsync();
+            IEnumerable<Etiqueta> etiquetas = await _etiquetaRepositorio.ObterEtiquetasAsync();
             return _mapeador.Map<IEnumerable<EtiquetaDTO>>(etiquetas);
         }
 
@@ -35,7 +35,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="idUsuario">ID do usuário</param>
         public async Task<IEnumerable<EtiquetaDTO>> ObterEtiquetasPorUsuarioAsync(int idUsuario)
         {
-            var etiquetas = await _etiquetaRepositorio.ObterEtiquetasPorUsuarioAsync(idUsuario);
+            IEnumerable<Etiqueta> etiquetas = await _etiquetaRepositorio.ObterEtiquetasPorUsuarioAsync(idUsuario);
             return _mapeador.Map<IEnumerable<EtiquetaDTO>>(etiquetas);
         }
 
@@ -45,7 +45,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da etiqueta</param>
         public async Task<EtiquetaDTO?> ObterPorIdAsync(int id)
         {
-            var etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(id);
+            Etiqueta? etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(id);
             return etiqueta != null ? _mapeador.Map<EtiquetaDTO>(etiqueta) : null;
         }
 
@@ -55,13 +55,13 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="criarEtiquetaDto">Dados da nova etiqueta</param>
         public async Task<EtiquetaDTO> CriarAsync(CriarEtiquetaDTO criarEtiquetaDto)
         {
-            var etiqueta = new Etiqueta(
+            Etiqueta etiqueta = new Etiqueta(
                 criarEtiquetaDto.Nome,
                 criarEtiquetaDto.Descricao,
                 criarEtiquetaDto.IdUsuario
             );
 
-            var etiquetaCriada = await _etiquetaRepositorio.CriarAsync(etiqueta);
+            Etiqueta etiquetaCriada = await _etiquetaRepositorio.CriarAsync(etiqueta);
             return _mapeador.Map<EtiquetaDTO>(etiquetaCriada);
         }
 
@@ -72,13 +72,13 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="atualizarEtiquetaDto">Novos dados da etiqueta</param>
         public async Task<EtiquetaDTO> AtualizarAsync(int id, AtualizarEtiquetaDTO atualizarEtiquetaDto)
         {
-            var etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(id);
+            Etiqueta? etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(id);
             if (etiqueta == null)
                 throw new ArgumentException("Etiqueta não encontrada");
 
             etiqueta.Atualizar(atualizarEtiquetaDto.Nome, atualizarEtiquetaDto.Descricao);
             
-            var etiquetaAtualizada = await _etiquetaRepositorio.AtualizarAsync(etiqueta);
+            Etiqueta etiquetaAtualizada = await _etiquetaRepositorio.AtualizarAsync(etiqueta);
             return _mapeador.Map<EtiquetaDTO>(etiquetaAtualizada);
         }
 
@@ -88,7 +88,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         /// <param name="id">ID da etiqueta</param>
         public async Task RemoverAsync(int id)
         {
-            var etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(id);
+            Etiqueta? etiqueta = await _etiquetaRepositorio.ObterPorIdAsync(id);
             if (etiqueta == null)
                 throw new ArgumentException("Etiqueta não encontrada");
 
