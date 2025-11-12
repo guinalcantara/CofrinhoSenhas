@@ -1,0 +1,58 @@
+-- Script de teste para CofrinhoSenhas (MySQL)
+START TRANSACTION;
+
+-- Usuários
+INSERT INTO `Usuarios` (`Nome`, `Email`, `HashSenha`, `SaltSenha`, `DataUltimoLogin`, `Ativo`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Administrador Teste', 'admin@test.local', 'HASH_EXEMPLO_1', 'SALT_EXEMPLO_1', NULL, 1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @user1 = LAST_INSERT_ID();
+
+INSERT INTO `Usuarios` (`Nome`, `Email`, `HashSenha`, `SaltSenha`, `DataUltimoLogin`, `Ativo`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Usuário Demo', 'demo@test.local', 'HASH_EXEMPLO_2', 'SALT_EXEMPLO_2', NULL, 1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @user2 = LAST_INSERT_ID();
+
+-- Categorias
+INSERT INTO `Categorias` (`Nome`, `Descricao`, `IdUsuario`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Pessoal', 'Categoria para itens pessoais', @user1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @cat1 = LAST_INSERT_ID();
+
+INSERT INTO `Categorias` (`Nome`, `Descricao`, `IdUsuario`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Trabalho', 'Categoria para contas do trabalho', @user1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @cat2 = LAST_INSERT_ID();
+
+-- Etiquetas
+INSERT INTO `Etiquetas` (`Nome`, `Descricao`, `IdUsuario`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Banco', 'Contas bancárias e serviços financeiros', @user1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @tag1 = LAST_INSERT_ID();
+
+INSERT INTO `Etiquetas` (`Nome`, `Descricao`, `IdUsuario`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Email', 'Contas de e-mail', @user2, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @tag2 = LAST_INSERT_ID();
+
+-- Senhas
+INSERT INTO `Senhas` (`Titulo`, `Url`, `Login`, `SenhaCriptografada`, `Descricao`, `IdUsuario`, `IdCategoria`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Conta Corrente', 'https://banco.exemplo', 'usuario.banco', 'ENCRYPTED_EXAMPLE_1', 'Acesso da conta corrente', @user1, @cat1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @senha1 = LAST_INSERT_ID();
+
+INSERT INTO `Senhas` (`Titulo`, `Url`, `Login`, `SenhaCriptografada`, `Descricao`, `IdUsuario`, `IdCategoria`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Gmail Pessoal', 'https://mail.google.com', 'usuario.demo', 'ENCRYPTED_EXAMPLE_2', 'Email pessoal principal', @user2, NULL, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+SET @senha2 = LAST_INSERT_ID();
+
+-- Associação Senha <-> Etiqueta (many-to-many)
+INSERT INTO `SenhaEtiquetas` (`EtiquetasId`, `SenhasId`) VALUES (@tag1, @senha1);
+INSERT INTO `SenhaEtiquetas` (`EtiquetasId`, `SenhasId`) VALUES (@tag2, @senha2);
+
+-- Logs de eventos
+INSERT INTO `LogEventos` (`Evento`, `Descricao`, `EnderecoIP`, `IdUsuario`, `DataInclusao`, `DataAlteracao`)
+VALUES
+('Login', 'Usuário efetuou login com sucesso', '127.0.0.1', @user1, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6)),
+('FalhaAutenticacao', 'Tentativa de login com senha inválida', '192.168.0.10', NULL, UTC_TIMESTAMP(6), UTC_TIMESTAMP(6));
+
+COMMIT;
