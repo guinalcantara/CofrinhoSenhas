@@ -98,7 +98,6 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
                 criarSenhaDto.IdCategoria
             );
 
-            // Adicionar etiquetas se fornecidas
             if (criarSenhaDto.IdEtiquetas.Any())
             {
                 foreach (int idEtiqueta in criarSenhaDto.IdEtiquetas)
@@ -179,12 +178,11 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
         {
             using Aes aes = Aes.Create();
 
-            // Força chave de 32 bytes
             byte[] chaveBytes = new byte[32];
             Encoding.UTF8.GetBytes(ChaveCriptografia, 0, Math.Min(ChaveCriptografia.Length, 32), chaveBytes, 0);
             aes.Key = chaveBytes;
 
-            aes.IV = new byte[16]; // IV zerado
+            aes.IV = new byte[16];
 
             using ICryptoTransform criptografador = aes.CreateEncryptor();
             byte[] bytesSenha = Encoding.UTF8.GetBytes(senha);
@@ -206,7 +204,7 @@ namespace CofrinhoSenhas.Aplicacao.Servicos
             Encoding.UTF8.GetBytes(ChaveCriptografia, 0, Math.Min(ChaveCriptografia.Length, 32), chaveBytes, 0);
             aes.Key = chaveBytes;
 
-            aes.IV = new byte[16]; // IV zerado
+            aes.IV = new byte[16];
 
             using ICryptoTransform descriptografador = aes.CreateDecryptor();
             byte[] bytesCriptografados = Convert.FromBase64String(senhaCriptografada);
