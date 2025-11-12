@@ -99,7 +99,7 @@ const CreatePassword = () => {
                 <S.Section>
                     <S.SectionTitle>Senha Gerada</S.SectionTitle>
                     <S.PasswordBox>
-                        <S.Password>{password || "Clique em 'Gerar Nova Senha'"}</S.Password>
+                        <S.Password>{password || "Senha não gerada..."}</S.Password>
                         <S.CopyButton
                             onClick={handleCopy}
                             disabled={!password}
@@ -110,7 +110,7 @@ const CreatePassword = () => {
                 </S.Section>
 
                 <S.Section>
-                    <S.SectionTitle>Opções de Geração</S.SectionTitle>
+                    <S.SectionTitle>Escolha como gerar a senha</S.SectionTitle>
                     <S.Options>
                         <Checkbox
                             label="Maiúsculas (A-Z)"
@@ -152,14 +152,14 @@ const CreatePassword = () => {
                 <S.Actions>
                     <Button
                         onClick={generatePassword}
-                        label="🔄 Gerar Nova Senha"
+                        label="Gerar Nova Senha"
                         type="button"
                         variant="ok"
                     />
                     {formData && (
                         <Button
                             onClick={handleUsePassword}
-                            label="✓ Usar Esta Senha"
+                            label="Usar Esta Senha"
                             disabled={!password}
                         />
                     )}

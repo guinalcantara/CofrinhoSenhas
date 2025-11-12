@@ -5,7 +5,7 @@ import EditPassword from "./pages/EditPassword";
 import Register from "./pages/Register";
 import CreatePassword from "./pages/CreatePassword";
 import { DashboardLayout } from "./components/Layout";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/Layout/ProtectedRoute";
 
 const App: React.FC = () => {
   const location = useLocation();

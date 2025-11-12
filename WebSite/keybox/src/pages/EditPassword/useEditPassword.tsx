@@ -43,7 +43,7 @@ export function useEditPassword() {
   }, []);
 
   useEffect(() => {
-    if (isEdit && id && !hasLoadedData.current) {
+    if (isEdit && id && !hasLoadedData.current && etiquetas.length > 0) {
       setLoading(true);
       senhaService.getDescriptografada(Number(id)).then((data) => {
         if (data as SenhaDescriptografadaDTO) {
